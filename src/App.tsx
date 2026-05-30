@@ -1,23 +1,25 @@
 // App.tsx
-// Main app — sets up page routing
+// Main app — sets up page routing between Register, Login and Dashboard
 
 import "./App.css";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Register from "./Register";
 import Login from "./Login";
 
-// Dashboard shown after successful login
+// Dashboard page — shown only after successful login
 function Dashboard() {
+  // Get token and name from localStorage
   const token = localStorage.getItem("token");
   const name = localStorage.getItem("userName");
 
-  // If no token found, send to login page
+  // If token not found, user is not logged in — redirect to login
   if (!token || !name) {
     window.location.href = "/login";
     return null;
   }
 
   return (
+    // Full screen teal background
     <div style={{
       display: "flex",
       justifyContent: "center",
@@ -26,6 +28,7 @@ function Dashboard() {
       background: "#2a9d8f",
       fontFamily: "'Segoe UI', sans-serif",
     }}>
+      {/* White card in the center */}
       <div style={{
         background: "#fff",
         borderRadius: "12px",
@@ -36,7 +39,7 @@ function Dashboard() {
         textAlign: "center",
       }}>
 
-        {/* Student name */}
+        {/* Show student name from localStorage */}
         <h1 style={{
           fontSize: "22px",
           fontWeight: "600",
@@ -46,7 +49,7 @@ function Dashboard() {
           Welcome, {name}!
         </h1>
 
-        {/* Status message */}
+        {/* Login success message */}
         <p style={{
           fontSize: "14px",
           color: "#6b7280",
@@ -55,11 +58,12 @@ function Dashboard() {
           You are logged in successfully.
         </p>
 
-        {/* Logout button */}
+        {/* Logout button — clears token and redirects to login */}
         <button
           onClick={() => {
-            // Clear token and name then go to login
+            // Remove JWT token and username from storage
             localStorage.clear();
+            // Send user back to login page
             window.location.href = "/login";
           }}
           style={{
@@ -80,13 +84,22 @@ function Dashboard() {
   );
 }
 
+// Main App component — defines all routes
 function App() {
   return (
+    // BrowserRouter enables navigation between pages
     <BrowserRouter>
       <Routes>
+        {/* Default route goes to register page */}
         <Route path="/" element={<Navigate to="/register" />} />
+
+        {/* Student registration page */}
         <Route path="/register" element={<Register />} />
+
+        {/* Student login page */}
         <Route path="/login" element={<Login />} />
+
+        {/* Protected dashboard — only accessible after login */}
         <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
     </BrowserRouter>

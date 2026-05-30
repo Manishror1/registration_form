@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./App.css";
 
+// Interface defines the shape of registration form data
 interface RegisterForm {
   name: string;
   email: string;
@@ -24,27 +25,33 @@ function Register() {
     confirmPassword: "",
   });
 
+  // State for error message and loading spinner
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
 
-  // Update whichever field changed
+  // Update whichever field changed using field name
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
-    // Basic validation before sending to server
+    // Check all fields are filled
     if (!form.name || !form.email || !form.contact || !form.gender) {
       setError("Please fill in all fields.");
       return;
     }
+
+    // Check both passwords match
     if (form.password !== form.confirmPassword) {
       setError("Passwords do not match.");
       return;
     }
+
+    // Check password is at least 6 characters
     if (form.password.length < 6) {
       setError("Password must be at least 6 characters.");
       return;
@@ -53,7 +60,7 @@ function Register() {
     try {
       setLoading(true);
 
-      // Send registration data to backend
+      // Send student details to backend register API
       const response = await fetch("http://localhost:5000/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -67,6 +74,8 @@ function Register() {
       });
 
       const data = await response.json();
+
+      // Show error if registration failed
       if (!response.ok) {
         setError(data.message || "Registration failed.");
         return;
@@ -77,6 +86,7 @@ function Register() {
       navigate("/login");
 
     } catch (err) {
+      // Show error if server is not running
       setError("Could not connect to server. Is the backend running?");
     } finally {
       setLoading(false);
@@ -84,14 +94,22 @@ function Register() {
   };
 
   return (
+    // Full page background
     <div className="auth-container">
+
+      {/* White registration card */}
       <div className="auth-card">
+
+        {/* Card header */}
         <div className="auth-header">
           <h1 className="auth-title">Student Registration</h1>
           <p className="auth-subtitle">Create your school account</p>
         </div>
 
+        {/* Registration form */}
         <form onSubmit={handleSubmit} className="auth-form">
+
+          {/* Full name input */}
           <div className="form-group">
             <label className="form-label">Full Name</label>
             <input className="form-input" type="text" name="name"
@@ -99,6 +117,7 @@ function Register() {
               onChange={handleChange} required />
           </div>
 
+          {/* Email input */}
           <div className="form-group">
             <label className="form-label">Email Address</label>
             <input className="form-input" type="email" name="email"
@@ -106,6 +125,7 @@ function Register() {
               onChange={handleChange} required />
           </div>
 
+          {/* Contact number input */}
           <div className="form-group">
             <label className="form-label">Contact Number</label>
             <input className="form-input" type="tel" name="contact"
@@ -113,6 +133,7 @@ function Register() {
               onChange={handleChange} required />
           </div>
 
+          {/* Gender dropdown */}
           <div className="form-group">
             <label className="form-label">Gender</label>
             <select className="form-input" name="gender"
@@ -124,6 +145,7 @@ function Register() {
             </select>
           </div>
 
+          {/* Password input */}
           <div className="form-group">
             <label className="form-label">Password</label>
             <input className="form-input" type="password" name="password"
@@ -131,6 +153,7 @@ function Register() {
               onChange={handleChange} required />
           </div>
 
+          {/* Confirm password input */}
           <div className="form-group">
             <label className="form-label">Confirm Password</label>
             <input className="form-input" type="password" name="confirmPassword"
@@ -138,16 +161,21 @@ function Register() {
               onChange={handleChange} required />
           </div>
 
+          {/* Show error message if validation fails */}
           {error && <p className="auth-error">{error}</p>}
 
+          {/* Submit button — shows loading text while waiting */}
           <button className="auth-btn" type="submit" disabled={loading}>
             {loading ? "Registering..." : "Register"}
           </button>
         </form>
 
+        {/* Link to login page */}
         <p className="auth-switch">
           Already have an account?{" "}
-          <span className="auth-link" onClick={() => navigate("/login")}>Login here</span>
+          <span className="auth-link" onClick={() => navigate("/login")}>
+            Login here
+          </span>
         </p>
       </div>
     </div>
