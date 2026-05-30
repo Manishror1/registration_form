@@ -14,7 +14,7 @@ function Login() {
   const [loading, setLoading] = useState<boolean>(false);
 
   // Handle form submission
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     setError("");
 
