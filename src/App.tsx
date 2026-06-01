@@ -1,6 +1,3 @@
-// App.tsx
-// Main app — sets up page routing between Register, Login and Dashboard
-
 import "./App.css";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Register from "./Register";
